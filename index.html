@@ -12,13 +12,26 @@
         <button id="crear_registro_btn" onclick="CrearRegistro(event)">Crear registro</button>
         <button id="actualizar_registro_btn" onclick="ActualizarRegistro(event)">Actualizar registro</button>
         <button id="eliminar_registro_btn" onclick="EliminarRegistro(event)">Eliminar registro</button>
-        <select id="tipo_de_busqueda">
+        <select id="tipo_de_busqueda" onchange="MostrarBusqueda()">
             <option value="nada">Nada</option>
+            <option value="nombre_recurso">Nombre</option>
+            <option value="plataforma">Plataforma</option>
             <option value="estado">Estado</option>
             <option value="formato">Formato</option>
-            <option value="plataforma">Plataforma</option>
         </select>
-        <input type="text" id="buscador">
+        <input type="text" id="buscador" onchange="BuscarRegistrosNP()" style="display: none;">
+        <select id="estado_busqueda" onchange="BuscarRegistrosE()" style="display: none;">
+            <option value="Nada">Nada</option>
+            <option value="En progreso">En progreso</option>
+            <option value="Terminado">Terminado</option>
+            <option value="Pendiente">Pendiente</option>
+        </select>
+        <select id="formato_busqueda" onchange="BuscarRegistrosF()" style="display: none;">
+            <option value="Nada">Nada</option>
+            <option value="Serie">Serie</option>
+            <option value="Película">Película</option>
+            <option value="Libro">Libro</option>
+        </select>
     </header>
     <main>
         <h1>Registros</h1>

@@ -1,11 +1,12 @@
 const CrearRegistroBtn = document.getElementById("crear_registro_btn");
-const ActualizarRegistroBtn = document.getElementById(
-    "actualizar_registro_btn"
-);
+const ActualizarRegistroBtn = document.getElementById("actualizar_registro_btn");
 const EliminarRegistroBtn = document.getElementById("eliminar_registro_btn");
 const TipoDeBusqueda = document.getElementById("tipo_de_busqueda");
 const Buscador = document.getElementById("buscador");
+const EstadoBusqueda = document.getElementById("estado_busqueda");
+const FormatoBusqueda = document.getElementById("formato_busqueda");
 const ContRegistros = document.getElementById("contenedor_registros");
+let lastWidth = window.innerWidth;
 const AsignarID = () => {
     for (let i = 0; i < ContRegistros.children.length; i++) {
         const element = ContRegistros.children[i];
@@ -22,19 +23,26 @@ const AsignarID = () => {
 };
 const Cancelar = () => {
     const cuadroInput = document.getElementById("cuadro_input");
-    if(cuadroInput === null) {
+    if (cuadroInput === null) {
         return
     }
     cuadroInput.remove();
 }
+const Redimensionamiento = () => {
+    const currentWidth = window.innerWidth;
+    if (currentWidth !== lastWidth) {
+        lastWidth = currentWidth;
+        Cancelar();
+    }
+};
 const Intervalo = func => {
     let timeout;
-    return (...args) => {
+    return () => {
         clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), 100);
+        timeout = setTimeout(() => func.apply(), 100);
     };
 }
-window.addEventListener('resize', Intervalo(Cancelar));
+window.addEventListener('resize', Intervalo(Redimensionamiento));
 const CrearRegistro = (event) => {
     if (event.target.parentElement.querySelector("div#cuadro_input") !== null) {
         return;
@@ -209,3 +217,105 @@ const RemoverRegistro = () => {
     cuadroInput.remove();
     AsignarID()
 };
+const MostrarBusqueda = () => {
+    const opcion = TipoDeBusqueda.value;
+    for (let i = 0; i < ContRegistros.children.length; i++) {
+        const element = ContRegistros.children[i];
+        element.style.display = "block";
+    }
+    Buscador.value = "";
+    if (opcion === "nada") {
+        Buscador.style.display = "none"
+        EstadoBusqueda.style.display = "none"
+        FormatoBusqueda.style.display = "none"
+        Cancelar()
+    } else if (opcion === "estado") {
+        EstadoBusqueda.style.display = "block"
+        Buscador.style.display = "none"
+        FormatoBusqueda.style.display = "none"
+        Cancelar()
+    } else if (opcion === "formato") {
+        FormatoBusqueda.style.display = "block"
+        Buscador.style.display = "none"
+        EstadoBusqueda.style.display = "none"
+        Cancelar()
+    } else {
+        Buscador.style.display = "block"
+        EstadoBusqueda.style.display = "none"
+        FormatoBusqueda.style.display = "none"
+        Cancelar()
+    }
+}
+const BuscarRegistrosNP = () => {
+    const opcion = TipoDeBusqueda.value;
+    const buscador = Buscador.value
+    const elemento = ContRegistros.querySelectorAll(`.${opcion}`)
+    if (/["<>=]+/g.test(buscador)) {
+        alert("No se puede ingresar eso");
+        for (let i = 0; i < ContRegistros.children.length; i++) {
+            const element = ContRegistros.children[i];
+            element.style.display = "block";
+        }
+        Buscador.value = "";
+        return;
+    }
+    const patron = new RegExp(`^${buscador}`, "i");
+    elemento.forEach(element => {
+        if (!patron.test(element.textContent)) {
+            element.parentElement.style.display = "none";
+        } else {
+            element.parentElement.style.display = "block";
+        }
+    })
+    if (
+        ContRegistros.querySelectorAll('div[style="display: none;"]').length ==
+        ContRegistros.children.length
+    ) {
+        alert(
+            `No se encontro ninguna coincidencia de ${opcion
+                .split("_")
+                .join(" ")}`
+        );
+        for (let i = 0; i < ContRegistros.children.length; i++) {
+            const element = ContRegistros.children[i];
+            element.style.display = "block";
+        }
+        Buscador.value = "";
+    }
+}
+const BuscarRegistrosE = () => {
+    const estadoBusqueda = EstadoBusqueda.value
+    if (estadoBusqueda === "Nada") {
+        for (let i = 0; i < ContRegistros.children.length; i++) {
+            const element = ContRegistros.children[i];
+            element.style.display = "block";
+        }
+        return
+    }
+    const elemento = ContRegistros.querySelectorAll(".estado")
+    elemento.forEach(element => {
+        if (estadoBusqueda === element.textContent) {
+            element.parentElement.style.display = "block";
+        } else {
+            element.parentElement.style.display = "none";
+        }
+    })
+}
+const BuscarRegistrosF = () => {
+    const formatoBusqueda = FormatoBusqueda.value
+    if (formatoBusqueda === "Nada") {
+        for (let i = 0; i < ContRegistros.children.length; i++) {
+            const element = ContRegistros.children[i];
+            element.style.display = "block";
+        }
+        return
+    }
+    const elemento = ContRegistros.querySelectorAll(".formato")
+    elemento.forEach(element => {
+        if (formatoBusqueda === element.textContent) {
+            element.parentElement.style.display = "block";
+        } else {
+            element.parentElement.style.display = "none";
+        }
+    })
+}
