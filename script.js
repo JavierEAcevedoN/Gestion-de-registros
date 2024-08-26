@@ -1,7 +1,5 @@
 const CrearRegistroBtn = document.getElementById("crear_registro_btn");
-const ActualizarRegistroBtn = document.getElementById(
-    "actualizar_registro_btn"
-);
+const ActualizarRegistroBtn = document.getElementById("actualizar_registro_btn");
 const EliminarRegistroBtn = document.getElementById("eliminar_registro_btn");
 const TipoDeBusqueda = document.getElementById("tipo_de_busqueda");
 const Buscador = document.getElementById("buscador");
@@ -77,12 +75,12 @@ const CrearRegistro = (event) => {
             <input type="date" id="fecha_t" placeholder="Fecha de terminacion">
             <select id="valoracion">
                 <option value="" hidden selected>Valoración final</option>
-                <option value="Ninguna">Ninguna</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="Sin valoracion">Sin valoracion</option>
+                <option value="★">★</option>
+                <option value="★★">★★</option>
+                <option value="★★★">★★★</option>
+                <option value="★★★★">★★★★</option>
+                <option value="★★★★★">★★★★★</option>
             </select>
             <button onclick="GuardarRegistro()">Crear Registro</button>
             <button onclick="Cancelar()">Cancelar</button>
@@ -102,20 +100,21 @@ const GuardarRegistro = () => {
     const plataforma = document.getElementById("plataforma").value;
     const estado = document.getElementById("estado").value;
     const formato = document.getElementById("formato").value;
-    const fechaT = document.getElementById("fecha_t").value;
+    let fechaT = document.getElementById("fecha_t").value;
     const valoracion = document.getElementById("valoracion").value;
     if (
-        !/^[a-zA-Z _-]+$/.test(nombreRecurso) ||
-        !/^[a-zA-Z _-]+$/.test(genero) ||
-        !/^[a-zA-Z _-]+$/.test(plataforma) ||
+        !/^[\p{L} _-]+$/u.test(nombreRecurso) ||
+        !/^[\p{L} _+-,.]+$/u.test(genero) ||
+        !/^[\p{L} _+-,.]+$/u.test(plataforma) ||
         estado === "" ||
         formato === "" ||
-        fechaT === "" ||
-        valoracion == ""
+        valoracion === ""
     ) {
         alert("Hay un formato que no es correcto");
-        Cancelar();
         return;
+    }
+    if (fechaT === "") {
+        fechaT = "Ninguna";
     }
     const DivElemento = document.createElement("div");
     DivElemento.classList.add("registro");
@@ -146,7 +145,7 @@ const ActualizarRegistro = (event) => {
     const div = document.createElement("div");
     div.id = "cuadro_input";
     div.style.position = "absolute";
-    div.style.left = `${event.clientX}px`;
+    div.style.left = `${event.clientX - 144.5}px`;
     div.style.top = `${event.clientY}px`;
     div.innerHTML = `
             <input type="text" id="id" placeholder="Ingresa la ID del recurso" title="Solo so permiten caracteres Numericos">
@@ -168,12 +167,12 @@ const ActualizarRegistro = (event) => {
             <input type="date" id="fecha_t" placeholder="Fecha de terminacion">
             <select id="valoracion">
                 <option value="" hidden selected>Valoración final</option>
-                <option value="Ninguna">Ninguna</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="Sin valoracion">Sin valoracion</option>
+                <option value="★">★</option>
+                <option value="★★">★★</option>
+                <option value="★★★">★★★</option>
+                <option value="★★★★">★★★★</option>
+                <option value="★★★★★">★★★★★</option>
             </select>
             <button onclick="ModificarRegistro()">Modificar Registro</button>
             <button onclick="Cancelar()">Cancelar</button>
@@ -194,21 +193,22 @@ const ModificarRegistro = () => {
     const plataforma = document.getElementById("plataforma").value;
     const estado = document.getElementById("estado").value;
     const formato = document.getElementById("formato").value;
-    const fechaT = document.getElementById("fecha_t").value;
+    let fechaT = document.getElementById("fecha_t").value;
     const valoracion = document.getElementById("valoracion").value;
     if (
         !/\d+/.test(ID) ||
-        !/^[a-zA-Z _-]+$/.test(nombreRecurso) ||
-        !/^[a-zA-Z _-]+$/.test(genero) ||
-        !/^[a-zA-Z _-]+$/.test(plataforma) ||
+        !/^[\p{L} _-]+$/u.test(nombreRecurso) ||
+        !/^[\p{L} _+-,.]+$/u.test(genero) ||
+        !/^[\p{L} _+-,.]+$/u.test(plataforma) ||
         estado === "" ||
         formato === "" ||
-        fechaT === "" ||
-        valoracion == ""
+        valoracion === ""
     ) {
         alert("Hay un formato que no es correcto");
-        Cancelar();
         return;
+    }
+    if (fechaT === "") {
+        fechaT = "Ninguna";
     }
     for (let i = 0; i < ContRegistros.children.length; i++) {
         const element = ContRegistros.children[i];
@@ -234,7 +234,7 @@ const EliminarRegistro = (event) => {
     const div = document.createElement("div");
     div.id = "cuadro_input";
     div.style.position = "absolute";
-    div.style.left = `${event.clientX}px`;
+    div.style.left = `${event.clientX - 289}px`;
     div.style.top = `${event.clientY}px`;
     div.innerHTML = `
             <input type="text" id="id" placeholder="Ingresa la ID del recurso" title="Solo so permiten caracteres Numericos">
@@ -258,7 +258,6 @@ const RemoverRegistro = () => {
     }
     if (!/\d+/.test(ID)) {
         alert("Hay un formato que no es correcto");
-        Cancelar();
         return;
     }
     cuadroInput.remove();
