@@ -1,5 +1,7 @@
 const CrearRegistroBtn = document.getElementById("crear_registro_btn");
-const ActualizarRegistroBtn = document.getElementById("actualizar_registro_btn");
+const ActualizarRegistroBtn = document.getElementById(
+    "actualizar_registro_btn"
+);
 const EliminarRegistroBtn = document.getElementById("eliminar_registro_btn");
 const TipoDeBusqueda = document.getElementById("tipo_de_busqueda");
 const Buscador = document.getElementById("buscador");
@@ -25,6 +27,10 @@ const GuardarContRegistros = () => {
     const datos = ContRegistros.innerHTML;
     localStorage.setItem("contenedor_registros", datos);
 };
+const MayusculaPrimeraLetra = (texto) => {
+    if (texto.length === 0) return texto;
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+};
 const Cancelar = () => {
     const cuadroInput = document.getElementById("cuadro_input");
     if (cuadroInput === null) {
@@ -47,20 +53,34 @@ const Intervalo = (func) => {
     };
 };
 window.addEventListener("resize", Intervalo(Redimensionamiento));
+const EstadoFecha = () => {
+    const estado = document.getElementById("estado").value;
+    const fechaT = document.getElementById("fecha_t");
+    if (estado !== "Terminado") {
+        fechaT.toggleAttribute("disabled", true);
+        fechaT.value = "";
+    } else {
+        fechaT.toggleAttribute("disabled", false);
+    }
+};
 const CrearRegistro = (event) => {
-    if (event.target.parentElement.querySelector("div#cuadro_input") !== null) {
+    if (
+        event.target.parentElement.parentElement.querySelector(
+            "div#cuadro_input"
+        ) !== null
+    ) {
         return;
     }
     const div = document.createElement("div");
     div.id = "cuadro_input";
-    div.style.position = "absolute";
+    div.style.position = "fixed";
     div.style.left = `${event.clientX}px`;
     div.style.top = `${event.clientY}px`;
     div.innerHTML = `
             <input type="text" id="nombre_recurso" placeholder="Nombre del recurso" title="Solo so permiten caracteres Alfabeticos">
             <input type="text" id="genero" placeholder="Género" title="Solo so permiten caracteres Alfabeticos">
             <input type="text" id="plataforma" placeholder="Plataforma" title="Solo so permiten caracteres Alfabeticos">
-            <select id="estado">
+            <select id="estado" onchange="EstadoFecha()">
                 <option value="" hidden selected>Estado</option>
                 <option value="En progreso">En progreso</option>
                 <option value="Terminado">Terminado</option>
@@ -72,7 +92,7 @@ const CrearRegistro = (event) => {
                 <option value="Película">Película</option>
                 <option value="Libro">Libro</option>
             </select>
-            <input type="date" id="fecha_t" placeholder="Fecha de terminacion">
+            <input type="date" id="fecha_t" placeholder="Fecha de terminacion" disabled>
             <select id="valoracion">
                 <option value="" hidden selected>Valoración final</option>
                 <option value="Sin valoracion">Sin valoracion</option>
@@ -95,9 +115,21 @@ const CrearRegistro = (event) => {
 };
 const GuardarRegistro = () => {
     const cuadroInput = document.getElementById("cuadro_input");
-    const nombreRecurso = document.getElementById("nombre_recurso").value;
-    const genero = document.getElementById("genero").value;
-    const plataforma = document.getElementById("plataforma").value;
+    const nombreRecurso = document
+        .getElementById("nombre_recurso")
+        .value.split(" ")
+        .map((txt) => MayusculaPrimeraLetra(txt))
+        .join(" ");
+    const genero = document
+        .getElementById("genero")
+        .value.split(", ")
+        .map((txt) => MayusculaPrimeraLetra(txt))
+        .join(", ");
+    const plataforma = document
+        .getElementById("plataforma")
+        .value.split(", ")
+        .map((txt) => MayusculaPrimeraLetra(txt))
+        .join(", ");
     const estado = document.getElementById("estado").value;
     const formato = document.getElementById("formato").value;
     let fechaT = document.getElementById("fecha_t").value;
@@ -139,20 +171,24 @@ const GuardarRegistro = () => {
     GuardarContRegistros();
 };
 const ActualizarRegistro = (event) => {
-    if (event.target.parentElement.querySelector("div#cuadro_input") !== null) {
+    if (
+        event.target.parentElement.parentElement.querySelector(
+            "div#cuadro_input"
+        ) !== null
+    ) {
         return;
     }
     const div = document.createElement("div");
     div.id = "cuadro_input";
-    div.style.position = "absolute";
+    div.style.position = "fixed";
     div.style.left = `${event.clientX - 144.5}px`;
     div.style.top = `${event.clientY}px`;
     div.innerHTML = `
-            <input type="text" id="id" placeholder="Ingresa la ID del recurso" title="Solo so permiten caracteres Numericos">
+            <input type="text" id="id" placeholder="Ingresa la ID del recurso" title="Solo so permiten caracteres Numericos" onchange="BuscarModificarRegistro()">
             <input type="text" id="nombre_recurso" placeholder="Nombre del recurso" title="Solo so permiten caracteres Alfabeticos">
             <input type="text" id="genero" placeholder="Género" title="Solo so permiten caracteres Alfabeticos">
             <input type="text" id="plataforma" placeholder="Plataforma" title="Solo so permiten caracteres Alfabeticos">
-            <select id="estado">
+            <select id="estado"onchange="EstadoFecha()">
                 <option value="" hidden selected>Estado</option>
                 <option value="En progreso">En progreso</option>
                 <option value="Terminado">Terminado</option>
@@ -164,7 +200,7 @@ const ActualizarRegistro = (event) => {
                 <option value="Película">Película</option>
                 <option value="Libro">Libro</option>
             </select>
-            <input type="date" id="fecha_t" placeholder="Fecha de terminacion">
+            <input type="date" id="fecha_t" placeholder="Fecha de terminacion" disabled>
             <select id="valoracion">
                 <option value="" hidden selected>Valoración final</option>
                 <option value="Sin valoracion">Sin valoracion</option>
@@ -185,12 +221,59 @@ const ActualizarRegistro = (event) => {
     const fechaMax = hoy.toISOString().split("T")[0];
     document.getElementById("fecha_t").max = fechaMax;
 };
+const BuscarModificarRegistro = () => {
+    const ID = document.getElementById("id").value;
+    for (let i = 0; i < ContRegistros.children.length; i++) {
+        const element = ContRegistros.children[i];
+        if (element.querySelector(".id").textContent === ID) {
+            document.getElementById("nombre_recurso").value =
+                element.querySelector(".nombre_recurso").textContent;
+            document.getElementById("genero").value =
+                element.querySelector(".genero").textContent;
+            document.getElementById("plataforma").value =
+                element.querySelector(".plataforma").textContent;
+            document.getElementById("estado").value =
+                element.querySelector(".estado").textContent;
+            if (document.getElementById("estado").value !== "Terminado") {
+                document
+                    .getElementById("fecha_t")
+                    .toggleAttribute("disabled", true);
+                document.getElementById("fecha_t").value = "";
+            } else {
+                document
+                    .getElementById("fecha_t")
+                    .toggleAttribute("disabled", false);
+            }
+            document.getElementById("formato").value =
+                element.querySelector(".formato").textContent;
+            if (element.querySelector(".fecha_t").textContent !== "Ninguna") {
+                document.getElementById("fecha_t").value =
+                    element.querySelector(".fecha_t").textContent;
+            }
+            document.getElementById("valoracion").value =
+                element.querySelector(".valoracion").textContent;
+            break;
+        }
+    }
+};
 const ModificarRegistro = () => {
     const cuadroInput = document.getElementById("cuadro_input");
     const ID = document.getElementById("id").value;
-    const nombreRecurso = document.getElementById("nombre_recurso").value;
-    const genero = document.getElementById("genero").value;
-    const plataforma = document.getElementById("plataforma").value;
+    const nombreRecurso = document
+        .getElementById("nombre_recurso")
+        .value.split(" ")
+        .map((txt) => MayusculaPrimeraLetra(txt))
+        .join(" ");
+    const genero = document
+        .getElementById("genero")
+        .value.split(", ")
+        .map((txt) => MayusculaPrimeraLetra(txt))
+        .join(", ");
+    const plataforma = document
+        .getElementById("plataforma")
+        .value.split(", ")
+        .map((txt) => MayusculaPrimeraLetra(txt))
+        .join(", ");
     const estado = document.getElementById("estado").value;
     const formato = document.getElementById("formato").value;
     let fechaT = document.getElementById("fecha_t").value;
@@ -228,12 +311,16 @@ const ModificarRegistro = () => {
     GuardarContRegistros();
 };
 const EliminarRegistro = (event) => {
-    if (event.target.parentElement.querySelector("div#cuadro_input") !== null) {
+    if (
+        event.target.parentElement.parentElement.querySelector(
+            "div#cuadro_input"
+        ) !== null
+    ) {
         return;
     }
     const div = document.createElement("div");
     div.id = "cuadro_input";
-    div.style.position = "absolute";
+    div.style.position = "fixed";
     div.style.left = `${event.clientX - 289}px`;
     div.style.top = `${event.clientY}px`;
     div.innerHTML = `
@@ -392,4 +479,8 @@ const BuscarRegistrosF = () => {
 };
 if (localStorage.getItem("contenedor_registros") !== null) {
     ContRegistros.innerHTML = localStorage.getItem("contenedor_registros");
+    for (let i = 0; i < ContRegistros.children.length; i++) {
+        const element = ContRegistros.children[i];
+        element.style.display = "flex";
+    }
 }
