@@ -36,9 +36,6 @@ input:hover {
     background-color: var(--color-letra-borde);
     color: var(--color-fondo);
 }
-input:disabled {
-    color: gray;
-}
 div#cuadro_input {
     background-color: var(--color-fondo);
     padding: 5px;
@@ -58,6 +55,8 @@ header {
     gap: 5px;
     width: 100%;
     align-items: start;
+    position: sticky;
+    top: 0px;
 }
 header div {
     display: flex;
@@ -101,6 +100,10 @@ main section#contenedor_registros div.registro h3 {
     padding: 5px;
     border-radius: 20px;
 }
+main section#contenedor_registros div.registro p.valoracion{
+    font-size: 26px;
+    color: rgb(255,249,228);
+}
 @media (max-width: 550px) {
     div#cuadro_input {
         position: static !important;
@@ -120,6 +123,9 @@ main section#contenedor_registros div.registro h3 {
     }
     main section#contenedor_registros div.registro > * {
         font-size: 3.6vw;
+    }
+    main section#contenedor_registros div.registro p.valoracion{
+        font-size: 5vw;
     }
 }
 @media (max-width: 280px) {

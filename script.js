@@ -57,10 +57,10 @@ const EstadoFecha = () => {
     const estado = document.getElementById("estado").value;
     const fechaT = document.getElementById("fecha_t");
     if (estado !== "Terminado") {
-        fechaT.toggleAttribute("disabled", true);
+        fechaT.toggleAttribute("hidden", true);
         fechaT.value = "";
     } else {
-        fechaT.toggleAttribute("disabled", false);
+        fechaT.toggleAttribute("hidden", false);
     }
 };
 const CrearRegistro = (event) => {
@@ -92,7 +92,7 @@ const CrearRegistro = (event) => {
                 <option value="Película">Película</option>
                 <option value="Libro">Libro</option>
             </select>
-            <input type="date" id="fecha_t" placeholder="Fecha de terminacion" disabled>
+            <input type="date" id="fecha_t" placeholder="Fecha de terminacion" hidden>
             <select id="valoracion">
                 <option value="" hidden selected>Valoración final</option>
                 <option value="Sin valoracion">Sin valoracion</option>
@@ -200,7 +200,7 @@ const ActualizarRegistro = (event) => {
                 <option value="Película">Película</option>
                 <option value="Libro">Libro</option>
             </select>
-            <input type="date" id="fecha_t" placeholder="Fecha de terminacion" disabled>
+            <input type="date" id="fecha_t" placeholder="Fecha de terminacion" hidden>
             <select id="valoracion">
                 <option value="" hidden selected>Valoración final</option>
                 <option value="Sin valoracion">Sin valoracion</option>
@@ -237,12 +237,12 @@ const BuscarModificarRegistro = () => {
             if (document.getElementById("estado").value !== "Terminado") {
                 document
                     .getElementById("fecha_t")
-                    .toggleAttribute("disabled", true);
+                    .toggleAttribute("hidden", true);
                 document.getElementById("fecha_t").value = "";
             } else {
                 document
                     .getElementById("fecha_t")
-                    .toggleAttribute("disabled", false);
+                    .toggleAttribute("hidden", false);
             }
             document.getElementById("formato").value =
                 element.querySelector(".formato").textContent;
@@ -395,7 +395,12 @@ const BuscarRegistrosNP = () => {
         Buscador.value = "";
         return;
     }
-    const patron = new RegExp(`^${buscador}`, "i");
+    let patron
+    if (opcion === "nombre_recurso") {
+        patron = new RegExp(`^${buscador}`, "i");
+    } else {
+        patron = new RegExp(`${buscador}`, "i");
+    }
     elemento.forEach((element) => {
         if (!patron.test(element.textContent)) {
             element.parentElement.style.display = "none";
@@ -440,7 +445,7 @@ const BuscarRegistrosE = () => {
         ContRegistros.querySelectorAll('div[style="display: none;"]').length ==
         ContRegistros.children.length
     ) {
-        alert(`No se encontro ninguna coincidencia de ${estadoBusqueda}`);
+        alert(`No se encontro ninguna coincidencia en el estado ${estadoBusqueda.toLowerCase()}`);
         for (let i = 0; i < ContRegistros.children.length; i++) {
             const element = ContRegistros.children[i];
             element.style.display = "flex";
@@ -469,7 +474,7 @@ const BuscarRegistrosF = () => {
         ContRegistros.querySelectorAll('div[style="display: none;"]').length ==
         ContRegistros.children.length
     ) {
-        alert(`No se encontro ninguna coincidencia de ${formatoBusqueda}`);
+        alert(`No se encontro ninguna coincidencia en el formato ${formatoBusqueda.toLowerCase()}`);
         for (let i = 0; i < ContRegistros.children.length; i++) {
             const element = ContRegistros.children[i];
             element.style.display = "flex";
