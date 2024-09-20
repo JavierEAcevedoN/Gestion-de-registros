@@ -102,6 +102,7 @@ const CrearRegistro = (event) => {
                 <option value="★★★★">★★★★</option>
                 <option value="★★★★★">★★★★★</option>
             </select>
+            <input type="text" id="resena" placeholder="Reseña" title="Solo so permiten caracteres Alfabeticos">
             <button onclick="GuardarRegistro()">Crear Registro</button>
             <button onclick="Cancelar()">Cancelar</button>
         `;
@@ -134,13 +135,17 @@ const GuardarRegistro = () => {
     const formato = document.getElementById("formato").value;
     let fechaT = document.getElementById("fecha_t").value;
     const valoracion = document.getElementById("valoracion").value;
+    const resena = MayusculaPrimeraLetra(
+        document.getElementById("resena").value
+    );
     if (
         !/^[\p{L} _-]+$/u.test(nombreRecurso) ||
         !/^[\p{L} _+-,.]+$/u.test(genero) ||
         !/^[\p{L} _+-,.]+$/u.test(plataforma) ||
         estado === "" ||
         formato === "" ||
-        valoracion === ""
+        valoracion === "" ||
+        !/^[\p{L} _+-,.]+$/u.test(resena)
     ) {
         alert("Hay un formato que no es correcto");
         return;
@@ -164,6 +169,8 @@ const GuardarRegistro = () => {
             <p class="fecha_t">${fechaT}</p>
             <h3>Valoracion</h3>
             <p class="valoracion">${valoracion}</p>
+            <h3>Reseña</h3>
+            <p class="resena">${resena}</p>
     `;
     ContRegistros.appendChild(DivElemento);
     cuadroInput.remove();
@@ -210,6 +217,7 @@ const ActualizarRegistro = (event) => {
                 <option value="★★★★">★★★★</option>
                 <option value="★★★★★">★★★★★</option>
             </select>
+            <input type="text" id="resena" placeholder="Reseña" title="Solo so permiten caracteres Alfabeticos">
             <button onclick="ModificarRegistro()">Modificar Registro</button>
             <button onclick="Cancelar()">Cancelar</button>
         `;
@@ -252,6 +260,8 @@ const BuscarModificarRegistro = () => {
             }
             document.getElementById("valoracion").value =
                 element.querySelector(".valoracion").textContent;
+            document.getElementById("resena").value =
+                element.querySelector(".resena").textContent;
             break;
         }
     }
@@ -278,6 +288,9 @@ const ModificarRegistro = () => {
     const formato = document.getElementById("formato").value;
     let fechaT = document.getElementById("fecha_t").value;
     const valoracion = document.getElementById("valoracion").value;
+    const resena = MayusculaPrimeraLetra(
+        document.getElementById("resena").value
+    );
     if (
         !/\d+/.test(ID) ||
         !/^[\p{L} _-]+$/u.test(nombreRecurso) ||
@@ -285,7 +298,8 @@ const ModificarRegistro = () => {
         !/^[\p{L} _+-,.]+$/u.test(plataforma) ||
         estado === "" ||
         formato === "" ||
-        valoracion === ""
+        valoracion === "" ||
+        !/^[\p{L} _+-,.]+$/u.test(resena)
     ) {
         alert("Hay un formato que no es correcto");
         return;
@@ -304,6 +318,7 @@ const ModificarRegistro = () => {
             element.querySelector(".formato").textContent = formato;
             element.querySelector(".fecha_t").textContent = fechaT;
             element.querySelector(".valoracion").textContent = valoracion;
+            element.querySelector(".resena").textContent = resena;
             break;
         }
     }
@@ -395,7 +410,7 @@ const BuscarRegistrosNP = () => {
         Buscador.value = "";
         return;
     }
-    let patron
+    let patron;
     if (opcion === "nombre_recurso") {
         patron = new RegExp(`^${buscador}`, "i");
     } else {
@@ -445,7 +460,9 @@ const BuscarRegistrosE = () => {
         ContRegistros.querySelectorAll('div[style="display: none;"]').length ==
         ContRegistros.children.length
     ) {
-        alert(`No se encontro ninguna coincidencia en el estado ${estadoBusqueda.toLowerCase()}`);
+        alert(
+            `No se encontro ninguna coincidencia en el estado ${estadoBusqueda.toLowerCase()}`
+        );
         for (let i = 0; i < ContRegistros.children.length; i++) {
             const element = ContRegistros.children[i];
             element.style.display = "flex";
@@ -474,7 +491,9 @@ const BuscarRegistrosF = () => {
         ContRegistros.querySelectorAll('div[style="display: none;"]').length ==
         ContRegistros.children.length
     ) {
-        alert(`No se encontro ninguna coincidencia en el formato ${formatoBusqueda.toLowerCase()}`);
+        alert(
+            `No se encontro ninguna coincidencia en el formato ${formatoBusqueda.toLowerCase()}`
+        );
         for (let i = 0; i < ContRegistros.children.length; i++) {
             const element = ContRegistros.children[i];
             element.style.display = "flex";
