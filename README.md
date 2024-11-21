@@ -1,4 +1,4 @@
-# Proyecto de JavaScript 🚀
+# Gestion de Registros 🚀
 ## Tabla de contenidos 📚
 - [Descripcion](#descripcion)
 - [Proceso](#proceso)
@@ -32,7 +32,7 @@ El proyecto fue hecho con HTML para la estructuracion, CSS para el diseño y el 
 
 Clonar repositorio:
 ```sh
-https://github.com/JavierEAcevedoN/Proyecto_JavaScript_AcevedoJavier.git
+https://github.com/JavierEAcevedoN/Gestion-de-registros.git
 ```
 <h3 id="screenshots">Screenshots 📷</h3>
 
@@ -55,7 +55,9 @@ El wireframe de la pagina principal cuando se clickea los botones registrar, edi
 Resultado final en telefono. 
 <h3 id="uso">Uso ✋</h3>
 
-Ejecutar el index.html con Live Server o descargar el zip descomprimirlo y ejecutar el index.html.
+Ejecutar el index.html con Live Server o descargar el zip descomprimirlo, ejecutar el index.html  
+O se puede abrir con el siguiente enlace:
+- [Pagina](https://javiereacevedon.github.io/Gestion-de-registros/)
 <h3 id="autor">Autor 👤</h3>
 
 - [JavierEAcevedoN](https://github.com/JavierEAcevedoN)
